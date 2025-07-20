@@ -1,6 +1,10 @@
 pipeline {
     agent any;
 
+    environment {
+        SONAR_TOKEN = credentials('jenkins-sonarqube-token')
+    }
+
     stages {
 
         stage('Cleanup the Workspace') {
@@ -25,6 +29,23 @@ pipeline {
           steps {
             bat 'npm run test'
           }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('sonarqube-server') {
+                    script {
+                        def scannerHome = tool name: 'sonarqube-scanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+                        bat """
+                            ${scannerHome}\\bin\\sonar-scanner.bat ^
+                            -Dsonar.projectKey=Ultimate-Dedvops-Project-Frontend ^
+                            -Dsonar.sources=. ^
+                            -Dsonar.host.url=http://localhost:9000 ^
+                            -Dsonar.login=${env.SONAR_TOKEN}
+                        """
+                    }
+                }
+            }
         }
 
         stage('Build Project') {
