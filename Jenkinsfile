@@ -20,6 +20,12 @@ pipeline {
             bat 'npm install'
           }
         }
+        
+        stage('Run Unit Testing') {
+          steps {
+            bat 'npm run test'
+          }
+        }
 
         stage('Build Project') {
           steps {

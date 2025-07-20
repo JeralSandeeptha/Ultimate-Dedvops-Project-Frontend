@@ -12,4 +12,9 @@ export default defineConfig({
       usePolling: true,   // Important: Enables file watching via polling inside Docker
     },
   },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './src/setupTests.ts', // optional but recommended
+  },
 })
