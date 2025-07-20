@@ -13,9 +13,21 @@ pipeline {
             }
         }
 
+        // stage('Checkout from SCM') {
+        //   steps {
+        //     git branch: 'dev', url: 'https://github.com/JeralSandeeptha/Ultimate-Dedvops-Project-Frontend.git'
+        //   }
+        // }
         stage('Checkout from SCM') {
           steps {
-            git branch: 'dev', url: 'https://github.com/JeralSandeeptha/Ultimate-Dedvops-Project-Frontend.git'
+            checkout scm
+          }
+        }
+
+        stage('Verify the Branch') {
+          steps {
+            bat 'git branch'
+            bat 'git log -1 --oneline'
           }
         }
 
@@ -38,11 +50,10 @@ pipeline {
                         def scannerHome = tool name: 'sonarqube-scanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
                         bat """
                             ${scannerHome}\\bin\\sonar-scanner.bat ^
-                            -Dsonar.projectKey=Ultimate-Dedvops-Project-Frontend ^
+                            -Dsonar.projectKey=Ultimate-Dedvops-Project-Frontend-Dev ^
                             -Dsonar.sources=. ^
                             -Dsonar.host.url=http://localhost:9000 ^
-                            -Dsonar.login=${env.SONAR_TOKEN} ^
-                            -Dsonar.branch.name=dev
+                            -Dsonar.login=${env.SONAR_TOKEN}
                         """
                     }
                 }
