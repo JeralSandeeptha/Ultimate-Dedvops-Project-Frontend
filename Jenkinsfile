@@ -15,7 +15,7 @@ pipeline {
 
         stage('Checkout from SCM') {
           steps {
-            git branch: 'dev', url: 'https://github.com/JeralSandeeptha/Ultimate-Dedvops-Project-Frontend.git'
+            git branch: 'main', url: 'https://github.com/JeralSandeeptha/Ultimate-Dedvops-Project-Frontend.git'
           }
         }
 
