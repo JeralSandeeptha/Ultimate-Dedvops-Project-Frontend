@@ -48,6 +48,15 @@ pipeline {
             }
         }
 
+        stage('Quality Gate') {
+            steps {
+                // Wait for the quality gate result
+                timeout(time: 5, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+
         stage('Build Project') {
           steps {
             bat 'npm run build'
