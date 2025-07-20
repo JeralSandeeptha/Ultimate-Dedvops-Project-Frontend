@@ -41,7 +41,7 @@ pipeline {
                             -Dsonar.projectKey=Ultimate-Dedvops-Project-Frontend ^
                             -Dsonar.sources=. ^
                             -Dsonar.host.url=http://localhost:9000 ^
-                            -Dsonar.login=${env.SONAR_TOKEN}
+                            -Dsonar.login=${env.SONAR_TOKEN} ^
                             -Dsonar.branch.name=dev
                         """
                     }
