@@ -3,6 +3,12 @@ pipeline {
 
     environment {
         SONAR_TOKEN = credentials('jenkins-sonarqube-token')
+        APP_NAME = "ultimate-devops-project-frontend"
+        RELEASE = "1.0.0"
+        DOCKER_USER = "jeralsandeeptha"
+        DOCKER_PASS = 'dockerhub'
+        IMAGE_NAME = "${DOCKER_USER}" + "/" + "${APP_NAME}"
+        IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
     }
 
     stages {
@@ -45,7 +51,7 @@ pipeline {
                         def scannerHome = tool name: 'sonarqube-scanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
                         bat """
                             ${scannerHome}\\bin\\sonar-scanner.bat ^
-                            -Dsonar.projectKey=Ultimate-Dedvops-Project-Frontend ^
+                            -Dsonar.projectKey=Ultimate-DevOps-Project-Frontend ^
                             -Dsonar.sources=. ^
                             -Dsonar.host.url=http://localhost:9000 ^
                             -Dsonar.login=${env.SONAR_TOKEN}
@@ -68,6 +74,29 @@ pipeline {
           steps {
             bat 'npm run build'
           }
+        }
+
+        stage('Build & Push Docker Image') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                        // Login to Docker Hub
+                        bat "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin"
+        
+                        // Build Docker image
+                        def dockerImage = docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
+        
+                        // Push tagged image
+                        dockerImage.push("${IMAGE_TAG}")
+        
+                        // Push latest tag
+                        dockerImage.push("latest")
+        
+                        // Logout (optional)
+                        bat "docker logout"
+                    }
+                }
+            }
         }
     }
 
