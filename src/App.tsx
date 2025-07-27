@@ -2,7 +2,7 @@ function App() {
 
   return (
     <>
-      Hello Jeral Sandeeptha
+      Hello Jeral
     </>
   )
 }
