@@ -9,6 +9,7 @@ pipeline {
         DOCKER_PASS = 'dockerhub'
         IMAGE_NAME = "${DOCKER_USER}" + "/" + "${APP_NAME}"
         IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
+        JENKINS_API_TOKEN = credentials('JENKINS_API_TOKEN')
     }
 
     stages {
@@ -97,6 +98,15 @@ pipeline {
                     }
                 }
             }
+        }
+
+        stage('Trigger CD Pipeline') {
+          steps {
+              build job: 'GitOps-Ultimate-DevOps-Project-Frontend-Pipeline',
+                    parameters: [
+                        string(name: 'IMAGE_TAG', value: "${IMAGE_TAG}"),
+                    ]
+          }
         }
     }
 
